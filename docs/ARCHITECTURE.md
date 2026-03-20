@@ -129,23 +129,3 @@ Streamlit dashboard with sidebar options, file uploader, and three output sectio
 | Template summary over pure LLM  | Deterministic output, no API dependency. LLM enhancement is opt-in.                               |
 | Streamlit over Flask            | Fastest path to a working dashboard. Flask/FastAPI can replace it in production.                  |
 
----
-
-## Known Limitations
-
-1. **Fixed keyword lists** — symptoms and medications not in the list are missed.
-2. **No speaker diarization** — the system doesn't distinguish who said what.
-3. **Negation heuristic** — the 5-token window is simplistic; complex negation scopes can be missed.
-4. **No medical ontology mapping** — entities aren't linked to UMLS/SNOMED codes.
-5. **Confidence scores** — currently heuristic-based (exact match vs. partial match), not model-derived.
-
----
-
-## Future Improvements
-
-- Custom spaCy NER model trained on i2b2/n2c2 clinical datasets.
-- Speaker diarization via `pyannote-audio`.
-- UMLS/SNOMED CT entity linking with `scispaCy`.
-- FastAPI backend with REST endpoints for each pipeline stage.
-- PDF export of the clinical summary.
-- Evaluation metrics: precision/recall on a labelled test set.
