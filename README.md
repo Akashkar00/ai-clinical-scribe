@@ -133,29 +133,6 @@ Then clone the repo and import modules:
 import sys; sys.path.insert(0, 'ai-clinical-scribe')
 ```
 
----
-
-## Limitations (MVP)
-
-- Uses simulated/sample audio — not validated on real clinical recordings.
-- Entity extraction is rule-based with a fixed keyword list; no ML-based NER for medical terms.
-- Whisper "base" model may struggle with heavy accents or noisy audio.
-- Summary is template-driven; the optional LLM path needs a Groq API key.
-
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for a deeper discussion.
-
----
-
-## Future Improvements
-
-- Train a custom spaCy NER model on medical corpora (e.g., i2b2, n2c2).
-- Add speaker diarization to separate doctor vs. patient turns.
-- Integrate UMLS or SNOMED CT for standardised medical coding.
-- Deploy as a FastAPI microservice with a React frontend.
-- Add PDF export for the clinical summary.
-
----
-
 ## License
 
 This project is developed for academic/research purposes as part of an internship.
