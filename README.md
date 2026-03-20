@@ -1,4 +1,4 @@
-# 🩺 AI Clinical Scribe — MVP
+#  AI Clinical Scribe — MVP
 
 > An AI-powered prototype that converts doctor-patient consultation audio into structured clinical summaries using speech recognition and NLP.
 
