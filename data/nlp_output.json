@@ -1,0 +1,40 @@
+{
+  "transcription": "My name is Aptath Raud, and I have Bates, and I have taken Parasitamol. Bye, symptoms are yellow people, spanking in boots.",
+  "nlp": {
+    "ner_entities": [
+      {
+        "text": "Aptath Raud",
+        "label": "PERSON",
+        "start": 11,
+        "end": 22
+      },
+      {
+        "text": "Bates",
+        "label": "PERSON",
+        "start": 35,
+        "end": 40
+      },
+      {
+        "text": "Parasitamol",
+        "label": "PERSON",
+        "start": 59,
+        "end": 70
+      }
+    ],
+    "negated_spans": [],
+    "temporal_phrases": []
+  },
+  "entities": {
+    "patient_info": {
+      "name": "Aptath Raud",
+      "age": null
+    },
+    "symptoms": [],
+    "duration": [],
+    "medications": [
+      "Parasitamol"
+    ],
+    "observations": [],
+    "negative_findings": []
+  }
+}
