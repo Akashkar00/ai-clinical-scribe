@@ -1,0 +1,7 @@
+openai-whisper
+gtts
+spacy
+streamlit
+groq
+pytest
+ffmpeg-python

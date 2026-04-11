@@ -1,0 +1,73 @@
+{
+  "text": "My name is Aptath Raud, and I have Bates, and I have taken Parasitamol. Bye, symptoms are yellow people, spanking in boots.",
+  "segments": [
+    {
+      "id": 0,
+      "seek": 0,
+      "start": 0.0,
+      "end": 7.0,
+      "text": " My name is Aptath Raud, and I have Bates, and I have taken Parasitamol.",
+      "tokens": [
+        50364,
+        1222,
+        1315,
+        307,
+        316,
+        662,
+        998,
+        7591,
+        532,
+        11,
+        293,
+        286,
+        362,
+        363,
+        1024,
+        11,
+        293,
+        286,
+        362,
+        2726,
+        3457,
+        296,
+        270,
+        335,
+        401,
+        13,
+        50714
+      ],
+      "temperature": 0.0,
+      "avg_logprob": -0.8216397421700614,
+      "compression_ratio": 1.1941747572815533,
+      "no_speech_prob": 0.32021304965019226
+    },
+    {
+      "id": 1,
+      "seek": 0,
+      "start": 7.0,
+      "end": 13.0,
+      "text": " Bye, symptoms are yellow people, spanking in boots.",
+      "tokens": [
+        50714,
+        4621,
+        11,
+        8332,
+        366,
+        5566,
+        561,
+        11,
+        637,
+        29411,
+        294,
+        15194,
+        13,
+        51014
+      ],
+      "temperature": 0.0,
+      "avg_logprob": -0.8216397421700614,
+      "compression_ratio": 1.1941747572815533,
+      "no_speech_prob": 0.32021304965019226
+    }
+  ],
+  "language": "en"
+}
