@@ -4,4 +4,7 @@ spacy
 streamlit
 groq
 pytest
-ffmpeg-python
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic
