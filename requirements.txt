@@ -1,7 +1,10 @@
-```
 openai-whisper
 gtts
 spacy
 streamlit
 groq
 pytest
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic

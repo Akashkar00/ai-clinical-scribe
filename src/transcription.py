@@ -1,7 +1,7 @@
 import whisper
 import os
 import json
-from audio_input import validate_audio
+from .audio_input import validate_audio
 
 # Load the Whisper model once (use "base" for speed, "medium" for accuracy)
 MODEL_SIZE = "base"
