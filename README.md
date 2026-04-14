@@ -1,6 +1,6 @@
-#  AI Clinical Scribe — MVP
+#  AI Clinical Scribe
 
-> An AI-powered prototype that converts doctor-patient consultation audio into structured clinical summaries using speech recognition and NLP.
+> An AI-powered platform that converts doctor-patient consultation audio into structured clinical documentation using speech recognition, NLP, and optional LLM summarisation.
 
 **Built as part of a Health Systems Research Internship at Shalink & Reyx Infinity Research Hub Pvt. Ltd.**
 
@@ -8,7 +8,7 @@
 
 ## What It Does
 
-Upload (or simulate) a consultation audio file → the system runs a **6-stage pipeline**:
+Upload (or simulate) a consultation audio file — the system runs a **6-stage pipeline**:
 
 ```
 ┌─────────────┐    ┌──────────────┐    ┌─────────────┐
@@ -19,66 +19,142 @@ Upload (or simulate) a consultation audio file → the system runs a **6-stage p
                                               │
                                               ▼
 ┌─────────────┐    ┌──────────────┐    ┌─────────────┐
-│  6. Web UI  │◀── │ 5. Clinical  │◀── │ 4. Entity   │
-│ (Streamlit) │    │   Summary    │    │ Extraction  │
+│  6. React   │◀── │ 5. Clinical  │◀── │ 4. Entity   │
+│     UI      │    │   Summary    │    │ Extraction  │
 └─────────────┘    └──────────────┘    └─────────────┘
 ```
 
-**Input:** Consultation audio (or built-in sample transcript)  
-**Output:** Structured entities (symptoms, duration, medication, negations) + formatted clinical note
+**Input:** Consultation audio file or a typed sample transcript  
+**Output:** Full transcript · extracted entities (symptoms, medications, duration, negations) · confidence scores · SOAP clinical summary
 
 ---
 
 ## Tech Stack
 
-| Component          | Technology                        |
-|--------------------|-----------------------------------|
-| Language           | Python 3.10+                      |
-| Speech-to-Text     | OpenAI Whisper (local, open-source) |
-| NLP                | spaCy (`en_core_web_sm`)          |
-| Entity Extraction  | Rule-based + regex                |
-| Summary            | Template-based (+ optional Groq LLM) |
-| Web UI             | Streamlit                         |
-| Version Control    | Git + GitHub                      |
+| Component          | Technology                                      |
+|--------------------|-------------------------------------------------|
+| Backend Language   | Python 3.9+                                     |
+| API Framework      | FastAPI + Uvicorn                               |
+| Speech-to-Text     | OpenAI Whisper (Groq cloud — `whisper-large-v3`)|
+| NLP                | spaCy (`en_core_web_sm`)                        |
+| Entity Extraction  | Rule-based + regex                              |
+| Summary            | Template-based (+ optional Groq LLM)            |
+| Frontend           | React 18 + TypeScript + Material UI v5          |
+| UI Theme           | Health-themed teal + emerald palette            |
+| Version Control    | Git + GitHub                                    |
 
 ---
 
 ## Quick Start
 
-### 1. Clone & Setup
+### 1. Clone the repo
 
 ```bash
 git clone https://github.com/<your-username>/ai-clinical-scribe.git
 cd ai-clinical-scribe
-chmod +x setup.sh
-./setup.sh
 ```
 
-### 2. Run Tests
+### 2. Backend setup
+
+```bash
+python -m venv venv
+source venv/bin/activate          # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+python -m spacy download en_core_web_sm
+```
+
+Optional — enable LLM-enhanced summaries:
+
+```bash
+export GROQ_API_KEY=your_api_key_here
+```
+
+### 3. Frontend setup
+
+```bash
+cd frontend
+npm install
+cd ..
+```
+
+### 4. Run tests
 
 ```bash
 source venv/bin/activate
 pytest tests/ -v
 ```
 
-### 3. Launch the App
+---
+
+## Running the App
+
+> Both the backend and frontend must be running at the same time. Open **two terminal windows**.
+
+### Terminal 1 — Start the Backend (FastAPI)
 
 ```bash
-streamlit run app/streamlit_app.py
+# From the project root
+source venv/bin/activate          # Windows: venv\Scripts\activate
+python backend/main.py
 ```
 
-The dashboard opens at `http://localhost:8501`. Check **"Use sample transcript"** in the sidebar for a quick demo without needing audio.
+Expected output:
+```
+INFO:     Started server process [...]
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+```
 
-### 4. (Optional) Create a Sample Audio File
+- API base URL: `http://localhost:8000`
+- Interactive API docs: `http://localhost:8000/docs`
+- Health check: `http://localhost:8000/health`
+
+### Terminal 2 — Start the Frontend (React)
 
 ```bash
-python -c "
-from gtts import gTTS
-text = 'Doctor: What seems to be the problem? Patient: I have had fever for three days and dry cough. I took Paracetamol. No vomiting.'
-gTTS(text=text, lang='en').save('data/sample_audio/sample_consultation.mp3')
-print('Saved to data/sample_audio/sample_consultation.mp3')
-"
+# From the project root
+cd frontend
+npm start
 ```
+
+Expected output:
+```
+Compiled successfully!
+Local:  http://localhost:3000
+```
+
+Open `http://localhost:3000` in your browser.
+
+### Using the App
+
+1. Open `http://localhost:3000`
+2. **Option A — Upload audio:** Click the upload zone and select an MP3, WAV, M4A, OGG, or FLAC file
+3. **Option B — Sample transcript:** Toggle "Use sample transcript" and type or paste consultation text
+4. *(Optional)* Toggle **LLM-Enhanced Summary** if `GROQ_API_KEY` is set
+5. Click **Process Audio** — watch the 6-stage pipeline progress bar
+6. View the results: transcript, entity overview, symptom confidence chart, and SOAP clinical summary
+
+### Stopping the servers
+
+Press `Ctrl+C` in each terminal to stop the backend and frontend.
+
+---
+
+## API Endpoints
+
+| Method | Endpoint    | Description                              |
+|--------|-------------|------------------------------------------|
+| GET    | `/health`   | Health check — returns `{"status":"healthy"}` |
+| POST   | `/process`  | Process audio file or sample text        |
+
+`POST /process` accepts `multipart/form-data`:
+
+| Field         | Type    | Description                                  |
+|---------------|---------|----------------------------------------------|
+| `file`        | File    | Audio file (MP3, WAV, M4A, OGG, FLAC)       |
+| `use_sample`  | bool    | Use built-in sample transcript               |
+| `sample_text` | string  | Custom transcript text (when `use_sample=true`) |
+| `use_llm`     | bool    | Use Groq LLM for enhanced summary            |
 
 ---
 
@@ -86,53 +162,70 @@ print('Saved to data/sample_audio/sample_consultation.mp3')
 
 ```
 ai-clinical-scribe/
-├── README.md                  ← You are here
-├── requirements.txt           ← Python dependencies
+├── README.md                      ← You are here
+├── requirements.txt               ← Python dependencies
 ├── .gitignore
-├── setup.sh                   ← One-command setup
-├── config/
-│   └── settings.py            ← Centralized configuration
-├── data/
-│   └── sample_audio/
-│       └── README.md          ← Instructions for sample audio
+├── backend/
+│   └── main.py                    ← FastAPI app + all API endpoints
+├── frontend/
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── src/
+│       ├── App.tsx                ← Theme (teal/emerald) + layout
+│       ├── index.css              ← Global styles + Inter font
+│       ├── index.tsx
+│       └── components/
+│           └── ClinicalScribe.tsx ← Main UI component
 ├── src/
 │   ├── __init__.py
-│   ├── audio_input.py         ← Stage 1: Audio loading & validation
-│   ├── transcription.py       ← Stage 2: Whisper speech-to-text
-│   ├── nlp_analysis.py        ← Stage 3: spaCy NLP processing
-│   ├── entity_extraction.py   ← Stage 4: Medical entity extraction
-│   ├── summary_generator.py   ← Stage 5: Clinical note generation
-│   └── utils.py               ← Shared helpers
-├── app/
-│   └── streamlit_app.py       ← Stage 6: Streamlit dashboard
+│   ├── audio_input.py             ← Stage 1: Audio loading & validation
+│   ├── transcription.py           ← Stage 2: Whisper speech-to-text
+│   ├── nlp_analysis.py            ← Stage 3: spaCy NLP processing
+│   ├── entity_extraction.py       ← Stage 4: Medical entity extraction
+│   ├── summary_generator.py       ← Stage 5: Clinical note generation
+│   ├── pipeline.py                ← CLI pipeline runner
+│   └── utils.py                   ← Shared helpers
+├── config/
+│   └── settings.py                ← Centralised configuration
+├── data/
+│   └── sample_audio/
 ├── tests/
 │   ├── test_transcription.py
 │   ├── test_extraction.py
 │   └── test_summary.py
-├── docs/
-│   └── ARCHITECTURE.md        ← Technical architecture documentation
-└── notebooks/
-    └── pipeline_demo.ipynb    ← Jupyter notebook walking through the pipeline
+└── docs/
+    └── ARCHITECTURE.md
 ```
+
+---
+
+## CLI Pipeline (no UI)
+
+Run the full pipeline directly from the terminal against an audio file:
+
+```bash
+source venv/bin/activate
+cd src
+python pipeline.py /path/to/consultation.m4a
+```
+
+Outputs are saved to `data/nlp_output.json` and `data/clinical_summary.txt`.
 
 ---
 
 ## Google Colab
 
-All modules work on Colab. Add this cell at the top of any notebook:
+All `src/` modules work in Colab. Add this cell at the top:
 
 ```python
-!pip install openai-whisper spacy streamlit pandas gTTS
+!pip install openai-whisper spacy fastapi uvicorn pandas groq
 !python -m spacy download en_core_web_sm
-```
-
-Then clone the repo and import modules:
-
-```python
 !git clone https://github.com/<your-username>/ai-clinical-scribe.git
 import sys; sys.path.insert(0, 'ai-clinical-scribe')
 ```
 
+---
+
 ## License
 
-This project is developed for academic/research purposes as part of an internship.
+Developed for academic and research purposes as part of a Health Systems Research Internship.
